@@ -11,7 +11,8 @@ chrome.runtime.onMessage.addListener(
 );
 
 function getRecipeScale() {
-  origServings = prompt('Enter the number of servings in the original recipe. Enter 0 to scale by multiplication.');
+  let defaultServings = $(".o-Yield").find(".o-RecipeInfo__a-Description").text();
+  origServings = prompt('Enter the number of servings in the original recipe. Enter 0 to scale by multiplication.', parseInt(defaultServings));
 
   if (origServings > 0) {
     newServings = prompt('Enter the desired number of servings');
@@ -30,7 +31,7 @@ function getRecipeScale() {
   } else {
     invalidInput();
   }
-  
+
   if (scalingFactor != 1) {
     scaleRecipe();
   }
