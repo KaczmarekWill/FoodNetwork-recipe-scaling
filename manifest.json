@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "FoodNetwork.com Recipe Scaling",
+  "version": "0.1",
+
+  "content_scripts": [
+  {
+    "matches": [
+      "https://www.foodnetwork.com/recipes/*", "http://www.foodnetwork.com/recipes/*"
+    ],
+    "js": ["jquery-3.2.1.min.js", "content.js"]
+  }],
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+
+  "permissions": [ "tabs" ],
+
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
