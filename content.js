@@ -1,6 +1,28 @@
 let scalingFactor = 1;
 let origServings = 1;
 let newServings = 1;
+const numWords = {
+    'one': 1,
+    'two': 2,
+    'three': 3,
+    'four': 4,
+    'five': 5,
+    'six': 6,
+    'seven': 7,
+    'eight': 8,
+    'nine': 9,
+    'ten': 10,
+    'eleven': 11,
+    'twelve': 12,
+    'thirteen': 13,
+    'fourteen': 14,
+    'fifteen': 15,
+    'sixteen': 16,
+    'seventeen': 17,
+    'eighteen': 18,
+    'nineteen': 19,
+    'twenty': 20,
+}
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -43,5 +65,28 @@ function invalidInput() {
 }
 
 function scaleRecipe() {
+  $(".o-Ingredients").find(".o-Ingredients__a-ListItem").each(function(index) {
+    let origIngredient = $(this).text().trim();
+    let ingredientName = origIngredient.substr(origIngredient.indexOf(" "), origIngredient.length);
+    let origQuantity = origIngredient.substr(0, origIngredient.indexOf(" "));
+
+    let isNumber = eval('typeof ' + origQuantity);
+    if (isNumber !== "undefined") {
+      origQuantity = eval(origQuantity);
+      console.log(origQuantity);
+      let newQuantity = origQuantity * scalingFactor;
+      $(this).text(newQuantity + ingredientName);
+      console.log(newQuantity);
+    } else {
+      if (numWords.hasOwnProperty(origQuantity.toLowerCase())) {
+        origQuantity = numWords[origQuantity.toLowerCase()];
+        console.log(origQuantity);
+        let newQuantity = origQuantity * scalingFactor;
+        $(this).text(newQuantity + ingredientName);
+        console.log(newQuantity);
+      }
+    }
+    
+  })
   alert('Recipe Scaled');
 }
