@@ -72,29 +72,30 @@ function scaleRecipe() {
     let origIngredient = $(this).text().trim();
     let ingredientName = origIngredient.substr(origIngredient.indexOf(" "), origIngredient.length);
     let origQuantity = origIngredient.substr(0, origIngredient.indexOf(" "));
-
+    ingredientName = ingredientName.trim();
+    let ingredientArray = ingredientName.split(" ");
     if (numWords.hasOwnProperty(origQuantity.toLowerCase())) {
         origQuantity = numWords[origQuantity.toLowerCase()];
     }
 
-    if (ingredientName.substr(1,2) === "to") {
-      ingredientName = ingredientName.trim();
-      let ingredientArray = ingredientName.split(" ");
+    if (ingredientArray[0] === "to") {
       let secondQuantity = ingredientArray[1];
       ingredientArray = ingredientArray.splice(2, ingredientArray.length);
       let newQuantity = origQuantity * scalingFactor;
       let newSecond = secondQuantity * scalingFactor;
       $(this).text(newQuantity + " to " + newSecond + " " + ingredientArray.join(" "));
-      console.log(secondQuantity);
-
+    } else if (ingredientArray[0].substr(1,1) === "/") {
+      origQuantity = eval(origQuantity) + eval(ingredientArray[0]);
+      console.log(origQuantity);
+      let newQuantity = origQuantity * scalingFactor;
+      ingredientArray.shift();
+      $(this).text(newQuantity + " " + ingredientArray.join(" "));
     } else {
       let isNumber = eval('typeof ' + origQuantity);
       if (isNumber !== "undefined") {
         origQuantity = eval(origQuantity);
-        console.log(origQuantity);
         let newQuantity = origQuantity * scalingFactor;
-        $(this).text(newQuantity + ingredientName);
-        console.log(newQuantity);
+        $(this).text(newQuantity + " " + ingredientName);
       }
     } 
   })
