@@ -33,8 +33,10 @@ chrome.runtime.onMessage.addListener(
 );
 
 function getRecipeScale() {
-  let defaultServings = $(".o-Yield").find(".o-RecipeInfo__a-Description").text();
-  origServings = prompt('Enter the number of servings in the original recipe. Enter 0 to scale by multiplication.', parseInt(defaultServings));
+  let defaultYield = $(".o-Yield").find(".o-RecipeInfo__a-Description").text();
+  defaultServings = parseInt(defaultYield);
+
+  origServings = prompt('Enter the number of servings in the original recipe. Enter 0 to scale by multiplication.', defaultServings);
 
   if (origServings > 0) {
     newServings = prompt('Enter the desired number of servings');
@@ -55,6 +57,7 @@ function getRecipeScale() {
   }
 
   if (scalingFactor != 1) {
+    $(".o-Yield").find(".o-RecipeInfo__a-Description").text(newServings + " servings");
     scaleRecipe();
   }
 }
@@ -86,7 +89,5 @@ function scaleRecipe() {
         console.log(newQuantity);
       }
     }
-    
   })
-  alert('Recipe Scaled');
 }
