@@ -73,21 +73,29 @@ function scaleRecipe() {
     let ingredientName = origIngredient.substr(origIngredient.indexOf(" "), origIngredient.length);
     let origQuantity = origIngredient.substr(0, origIngredient.indexOf(" "));
 
-    let isNumber = eval('typeof ' + origQuantity);
-    if (isNumber !== "undefined") {
-      origQuantity = eval(origQuantity);
-      console.log(origQuantity);
-      let newQuantity = origQuantity * scalingFactor;
-      $(this).text(newQuantity + ingredientName);
-      console.log(newQuantity);
-    } else {
-      if (numWords.hasOwnProperty(origQuantity.toLowerCase())) {
+    if (numWords.hasOwnProperty(origQuantity.toLowerCase())) {
         origQuantity = numWords[origQuantity.toLowerCase()];
+    }
+
+    if (ingredientName.substr(1,2) === "to") {
+      ingredientName = ingredientName.trim();
+      let ingredientArray = ingredientName.split(" ");
+      let secondQuantity = ingredientArray[1];
+      ingredientArray = ingredientArray.splice(2, ingredientArray.length);
+      let newQuantity = origQuantity * scalingFactor;
+      let newSecond = secondQuantity * scalingFactor;
+      $(this).text(newQuantity + " to " + newSecond + " " + ingredientArray.join(" "));
+      console.log(secondQuantity);
+
+    } else {
+      let isNumber = eval('typeof ' + origQuantity);
+      if (isNumber !== "undefined") {
+        origQuantity = eval(origQuantity);
         console.log(origQuantity);
         let newQuantity = origQuantity * scalingFactor;
         $(this).text(newQuantity + ingredientName);
         console.log(newQuantity);
       }
-    }
+    } 
   })
 }
