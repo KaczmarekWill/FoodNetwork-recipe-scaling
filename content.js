@@ -36,6 +36,7 @@ function getRecipeScale() {
   let defaultYield = $(".o-Yield").find(".o-RecipeInfo__a-Description").text();
   defaultServings = parseInt(defaultYield);
 
+    // Prompts for scaling, defaults to yield amount on page
   origServings = prompt('Enter the number of servings in the original recipe. Enter 0 to scale by multiplication.', defaultServings);
 
   if (origServings > 0) {
@@ -56,6 +57,7 @@ function getRecipeScale() {
     invalidInput();
   }
 
+    // Scale recipe and replace yield number on page
   if (scalingFactor != 1) {
     $(".o-Yield").find(".o-RecipeInfo__a-Description").text(newServings + " servings");
     scaleRecipe();
@@ -68,35 +70,51 @@ function invalidInput() {
 }
 
 function scaleRecipe() {
+      // Grabs the quantity of each ingredient
   $(".o-Ingredients").find(".o-Ingredients__a-ListItem").each(function(index) {
     let origIngredient = $(this).text().trim();
     let ingredientName = origIngredient.substr(origIngredient.indexOf(" "), origIngredient.length);
-    let origQuantity = origIngredient.substr(0, origIngredient.indexOf(" "));
+    let origQuantity = convertWords(origIngredient.substr(0, origIngredient.indexOf(" ")));
     ingredientName = ingredientName.trim();
     let ingredientArray = ingredientName.split(" ");
-    if (numWords.hasOwnProperty(origQuantity.toLowerCase())) {
-        origQuantity = numWords[origQuantity.toLowerCase()];
-    }
 
+      // Handles range of values inputs
     if (ingredientArray[0] === "to") {
-      let secondQuantity = ingredientArray[1];
+      let secondQuantity = convertWords(ingredientArray[1]);
       ingredientArray = ingredientArray.splice(2, ingredientArray.length);
-      let newQuantity = origQuantity * scalingFactor;
-      let newSecond = secondQuantity * scalingFactor;
+      let newQuantity = scaleQuantity(origQuantity);
+      
+      let newSecond = scaleQuantity(secondQuantity);
       $(this).text(newQuantity + " to " + newSecond + " " + ingredientArray.join(" "));
+
+      // Handles compound fractional inputs
     } else if (ingredientArray[0].substr(1,1) === "/") {
       origQuantity = eval(origQuantity) + eval(ingredientArray[0]);
       console.log(origQuantity);
-      let newQuantity = origQuantity * scalingFactor;
+      let newQuantity = scaleQuantity(origQuantity);
       ingredientArray.shift();
       $(this).text(newQuantity + " " + ingredientArray.join(" "));
+
+      // Handles whole number and fractional inputs
     } else {
       let isNumber = eval('typeof ' + origQuantity);
       if (isNumber !== "undefined") {
         origQuantity = eval(origQuantity);
-        let newQuantity = origQuantity * scalingFactor;
+        let newQuantity = scaleQuantity(origQuantity);
         $(this).text(newQuantity + " " + ingredientName);
       }
     } 
   })
+}
+// Converts number words in to integers
+function convertWords(input) {
+  if (numWords.hasOwnProperty(input.toLowerCase())) {
+    return numWords[input.toLowerCase()];
+  } else {
+    return input;
+  }
+}
+// Scales inputs by given scaling factor, limits to 2 decimal places
+function scaleQuantity(input) {
+  return Math.round((input * scalingFactor) * 100)/100;
 }
